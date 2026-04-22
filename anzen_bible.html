@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>現場バイブル</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF6B00;
+  --orange-light: #FF8C33;
+  --yellow: #FFD100;
+  --red: #D32F2F;
+  --bg: #FAFAF8;
+  --bg2: #F0EEE9;
+  --card: #FFFFFF;
+  --text: #1A1A1A;
+  --text2: #555;
+  --border: #E0DDD8;
+  --uz: #3A86FF;
+  --ne: #2EC4B6;
+  --shadow: 0 4px 20px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== LANGUAGE SWITCHER ===== */
+.lang-bar {
+  background: var(--text);
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 16px;
+  flex-shrink: 0;
+}
+.lang-btn {
+  padding: 5px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  background: transparent;
+  color: #888;
+  transition: all 0.2s;
+}
+.lang-btn.active {
+  background: var(--orange);
+  color: #fff;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: var(--orange);
+  padding: 14px 20px 12px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: '⛑';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 48px;
+  opacity: 0.18;
+}
+.header-title {
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 26px;
+  color: #fff;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+.header-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.8);
+  margin-top: 3px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ===== NAV TABS ===== */
+.nav-tabs {
+  display: flex;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  flex-shrink: 0;
+}
+.nav-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px;
+  cursor: pointer;
+  color: #AAA;
+  font-size: 10px;
+  font-weight: 700;
+  gap: 3px;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.2s;
+}
+.nav-tab .ico { font-size: 20px; }
+.nav-tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+/* ===== SCROLL AREA ===== */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ===== SECTIONS ===== */
+.section { display: none; padding: 16px 14px 100px; }
+.section.active { display: block; }
+
+/* ===== EMERGENCY ===== */
+.sos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.sos-btn {
+  background: var(--red);
+  border-radius: 16px;
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #9A1F1F;
+  transition: transform 0.1s, box-shadow 0.1s;
+  user-select: none;
+  position: relative;
+}
+.sos-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #9A1F1F; }
+.sos-btn .jp { font-size: 20px; font-weight: 900; color: #fff; }
+.sos-btn .trans { font-size: 10px; color: rgba(255,255,255,0.85); margin-top: 5px; line-height: 1.4; }
+.sos-btn .speaker { font-size: 16px; margin-top: 4px; }
+
+.tel-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tel-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--border);
+}
+.tel-card .num { font-size: 36px; font-weight: 900; color: var(--red); line-height: 1; }
+.tel-card .label { font-size: 12px; color: var(--text2); margin-top: 4px; font-weight: 700; }
+
+.section-label {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--text2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  margin-top: 4px;
+}
+
+/* ===== WORD CARDS (Glossary) ===== */
+.search-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+.search-wrap input {
+  width: 100%;
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px 12px 42px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-wrap input:focus { border-color: var(--orange); }
+.search-wrap .search-ico {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+}
+
+.cat-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 12px;
+}
+.cat-scroll::-webkit-scrollbar { display: none; }
+.cat-pill {
+  flex: none;
+  padding: 7px 16px;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.cat-pill.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+.word-card {
+  background: var(--card);
+  border-radius: 16px;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+}
+.word-card-top {
+  padding: 14px 16px 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.word-card .jp-big { font-size: 22px; font-weight: 900; flex: 1; }
+.word-card .reading { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.word-card .desc-text { font-size: 13px; color: var(--text2); padding: 0 16px 10px; }
+.speak-btn {
+  background: var(--orange);
+  border: none;
+  border-radius: 50%;
+  width: 40px; height: 40px;
+  font-size: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 8px rgba(255,107,0,0.3);
+  transition: transform 0.1s;
+}
+.speak-btn:active { transform: scale(0.92); }
+.word-card-langs {
+  background: var(--bg2);
+  border-top: 1.5px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.lang-cell {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lang-cell:first-child { border-right: 1.5px solid var(--border); }
+.lang-cell .flag { font-size: 18px; flex-shrink: 0; }
+.lang-cell .lang-text { font-size: 12px; font-weight: 700; flex: 1; line-height: 1.4; }
+.lang-cell .speak-sm {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+/* ===== MANUAL ===== */
+.manual-item {
+  background: var(--card);
+  border-radius: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+}
+.manual-head {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+.manual-head .num-circle {
+  width: 34px; height: 34px;
+  background: var(--orange);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900;
+  font-size: 15px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.manual-head .mtitle { font-weight: 900; font-size: 15px; flex: 1; line-height: 1.3; }
+.manual-head .chevron { color: #CCC; font-size: 18px; transition: transform 0.25s; flex-shrink: 0; }
+.manual-head.open .chevron { transform: rotate(180deg); }
+.manual-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.manual-body.open { max-height: 1000px; }
+.manual-body-inner {
+  padding: 0 16px 16px;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text2);
+  border-top: 1.5px solid var(--bg2);
+}
+.manual-body-inner ul { padding-left: 20px; }
+.manual-body-inner li { margin-bottom: 6px; }
+.tip-box {
+  background: #FFF8E1;
+  border-left: 4px solid var(--yellow);
+  border-radius: 0 10px 10px 0;
+  padding: 10px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+  color: #5D4037;
+}
+
+/* ===== CHECKLIST ===== */
+.day-progress {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1.5px solid var(--border);
+}
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.progress-top .p-label { font-weight: 900; font-size: 15px; }
+.progress-top .p-count { font-size: 22px; font-weight: 900; color: var(--orange); }
+.prog-bar {
+  height: 12px;
+  background: var(--bg2);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--orange), var(--yellow));
+  border-radius: 6px;
+  transition: width 0.4s cubic-bezier(.4,0,.2,1);
+}
+.all-done {
+  text-align: center;
+  padding: 12px;
+  font-weight: 900;
+  color: var(--orange);
+  font-size: 15px;
+  display: none;
+}
+
+.chk-item {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 15px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  border: 1.5px solid var(--border);
+  transition: background 0.2s, border-color 0.2s;
+  user-select: none;
+}
+.chk-item.done { background: #FFF8F0; border-color: var(--orange); }
+.chk-circle {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2.5px solid #CCC;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  background: #fff;
+}
+.chk-item.done .chk-circle { background: var(--orange); border-color: var(--orange); color: #fff; }
+.chk-texts { flex: 1; }
+.chk-texts .clabel { font-weight: 700; font-size: 15px; }
+.chk-texts .csub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.reset-wrap { text-align: center; margin-top: 8px; }
+.reset-link {
+  background: none;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-size: 13px;
+  color: var(--text2);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.reset-link:hover { border-color: var(--orange); color: var(--orange); }
+
+/* Speaking animation */
+@keyframes speaking {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.speaking { animation: speaking 0.4s ease infinite; background: var(--yellow) !important; }
+
+.empty { text-align: center; padding: 40px 20px; color: #BBB; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<!-- LANG BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('ja', this)">日本語</button>
+  <button class="lang-btn" onclick="setLang('uz', this)">🇺🇿 O'zbek</button>
+  <button class="lang-btn" onclick="setLang('ne', this)">🇳🇵 नेपाली</button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-title" id="h-title">現場バイブル</div>
+  <div class="header-sub" id="h-sub">建設業 安全マニュアル ／ KENSETSU ANZEN</div>
+</header>
+
+<!-- NAV -->
+<div class="nav-tabs">
+  <div class="nav-tab active" onclick="showSection('sos', this)">
+    <span class="ico">🚨</span>
+    <span id="nav-sos">緊急</span>
+  </div>
+  <div class="nav-tab" onclick="showSection('words', this)">
+    <span class="ico">💬</span>
+    <span id="nav-words">用語集</span>
+  </div>
+  <div class="nav-tab" onclick="showSection('manual', this)">
+    <span class="ico">📖</span>
+    <span id="nav-manual">マニュアル</span>
+  </div>
+  <div class="nav-tab" onclick="showSection('check', this)">
+    <span class="ico">✅</span>
+    <span id="nav-check">チェック</span>
+  </div>
+</div>
+
+<div class="scroll-area">
+
+  <!-- SOS SECTION -->
+  <div class="section active" id="sec-sos">
+    <div class="section-label" id="sos-label">🚨 緊急フレーズ — タップして音声再生</div>
+    <div class="sos-grid" id="sos-grid"></div>
+    <div class="section-label" id="tel-label">📞 緊急連絡先</div>
+    <div class="tel-cards">
+      <div class="tel-card">
+        <div class="num">119</div>
+        <div class="label">🚑 救急・消防<br>Ambulance / Tez yordam</div>
+      </div>
+      <div class="tel-card">
+        <div class="num">110</div>
+        <div class="label">🚓 警察<br>Police / Politsiya</div>
+      </div>
+    </div>
+    <div class="section-label">⚠️ 災害が起きたとき</div>
+    <div class="manual-item">
+      <div class="manual-head" onclick="toggleManual(this)">
+        <div class="num-circle">1</div>
+        <div class="mtitle" id="step1-title">大声で周りの人に知らせる</div>
+        <div class="chevron">⌄</div>
+      </div>
+      <div class="manual-body">
+        <div class="manual-body-inner">
+          <div class="tip-box">「あぶない！」「にげろ！」「はなれろ！」<br>
+          🇺🇿 "Xavfli! Qoch! Uzoqlash!"<br>
+          🇳🇵 "Abunai! Bhagnu! Hatnu!"</div>
+        </div>
+      </div>
+    </div>
+    <div class="manual-item">
+      <div class="manual-head" onclick="toggleManual(this)">
+        <div class="num-circle">2</div>
+        <div class="mtitle" id="step2-title">119か110に電話する</div>
+        <div class="chevron">⌄</div>
+      </div>
+      <div class="manual-body">
+        <div class="manual-body-inner">
+          <div class="tip-box">「いつ・どこで・誰が・何をしていて・どうなった」を伝えます。<br>
+          🇺🇿 Qachon, qayerda, kim, nima qildi, nima bo'ldi.<br>
+          🇳🇵 Kahile, kahaa, ko, ke gaardai, ke bhayo.</div>
+        </div>
+      </div>
+    </div>
+    <div class="manual-item">
+      <div class="manual-head" onclick="toggleManual(this)">
+        <div class="num-circle">3</div>
+        <div class="mtitle" id="step3-title">職長(しょくちょう)に報告する</div>
+        <div class="chevron">⌄</div>
+      </div>
+      <div class="manual-body">
+        <div class="manual-body-inner">
+          必ず職長にも伝えてください。<br>
+          🇺🇿 Albatta brigadirga ham xabar bering.<br>
+          🇳🇵 Shokuncho-lाई पनि जानकारी दिनुहोस्।
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORDS SECTION -->
+  <div class="section" id="sec-words">
+    <div class="search-wrap">
+      <span class="search-ico">🔍</span>
+      <input type="text" id="search-input" placeholder="検索 / Search / Qidirish..." oninput="renderWords()">
+    </div>
+    <div class="cat-scroll" id="cat-scroll"></div>
+    <div id="word-list"></div>
+  </div>
+
+  <!-- MANUAL SECTION -->
+  <div class="section" id="sec-manual">
+    <div id="manual-list"></div>
+  </div>
+
+  <!-- CHECKLIST SECTION -->
+  <div class="section" id="sec-check">
+    <div class="day-progress">
+      <div class="progress-top">
+        <div class="p-label" id="chk-header">📋 今日の安全チェック</div>
+        <div class="p-count"><span id="chk-done">0</span>/<span id="chk-total">0</span></div>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="all-done" id="all-done-msg">🎉 全部チェックできました！ご安全に！</div>
+    </div>
+    <div id="chk-list"></div>
+    <div class="reset-wrap">
+      <button class="reset-link" onclick="resetCheck()">↺ リセット</button>
+    </div>
+  </div>
+
+</div><!-- end scroll-area -->
+
+<script>
+// ===========================
+// DATA
+// ===========================
+const LANGS = {
+  ja: {
+    header: '現場バイブル',
+    sub: '建設業 安全マニュアル',
+    navSos: '緊急', navWords: '用語集', navManual: 'マニュアル', navCheck: 'チェック',
+    sosLabel: '🚨 緊急フレーズ — タップして音声再生',
+    telLabel: '📞 緊急連絡先',
+    chkHeader: '📋 今日の安全チェック',
+    allDone: '🎉 全部チェックできました！ご安全に！',
+    searchPlaceholder: '検索...',
+    voiceLang: 'ja-JP'
+  },
+  uz: {
+    header: 'Qurilish Bibliyas',
+    sub: 'Xavfsizlik qo\'llanmasi',
+    navSos: 'Xavf', navWords: 'So\'zlar', navManual: 'Qo\'llanma', navCheck: 'Tekshir',
+    sosLabel: '🚨 Favqulodda iboralar — Bosib eshiting',
+    telLabel: '📞 Favqulodda raqamlar',
+    chkHeader: '📋 Bugungi xavfsizlik tekshiruvi',
+    allDone: '🎉 Hammasi tekshirildi! Ehtiyot bo\'ling!',
+    searchPlaceholder: 'Qidirish...',
+    voiceLang: 'uz-UZ'
+  },
+  ne: {
+    header: 'कार्यस्थल बाइबल',
+    sub: 'सुरक्षा नियमावली',
+    navSos: 'आपत्काल', navWords: 'शब्दकोश', navManual: 'नियम', navCheck: 'जाँच',
+    sosLabel: '🚨 आपत्कालीन वाक्यांश — थिचेर सुन्नुहोस्',
+    telLabel: '📞 आपत्कालीन नम्बर',
+    chkHeader: '📋 आजको सुरक्षा जाँच',
+    allDone: '🎉 सबै जाँच गर्नुभयो! सुरक्षित रहनुहोस्!',
+    searchPlaceholder: 'खोज्नुहोस्...',
+    voiceLang: 'ne-NP'
+  }
+};
+
+const sosData = [
+  { jp: 'あぶない！', uz: 'Xavfli! Qoch!', ne: 'Abunai! Bhagnu!' },
+  { jp: '止まれ！', uz: "To'xta!", ne: 'Roknu hos!' },
+  { jp: '助けて！', uz: 'Yordam!', ne: 'Sahayata!' },
+  { jp: 'にげろ！', uz: 'Qoch!', ne: 'Bhagnu hos!' },
+  { jp: 'はなれろ！', uz: 'Uzoqlash!', ne: 'Hatnu hos!' },
+  { jp: '火事だ！', uz: "Yong'in!", ne: 'Aago layo!' },
+];
+
+const wordData = [
+  { cat:'緊急', jp:'あぶない！', r:'きけん', desc:'危険を知らせる', uz:"Xavfli! Qoch!", ne:'Abunai! Bhagnu!' },
+  { cat:'緊急', jp:'止まれ！', r:'とまれ', desc:'すぐに作業をやめます', uz:"To'xta!", ne:'Roknu hos!' },
+  { cat:'緊急', jp:'助けて！', r:'たすけて', desc:'誰かを呼びます', uz:'Yordam bering!', ne:'Sahayata garnu hos!' },
+  { cat:'朝礼', jp:'ご安全に！', r:'ごあんぜんに', desc:'現場のあいさつ', uz:"Ehtiyot bo'ling!", ne:'Surakshit rahanu hos!' },
+  { cat:'朝礼', jp:'KY活動', r:'けーわいかつどう', desc:'危ない場所を確認', uz:"Xavfni oldindan ko'rish.", ne:'Jokhim purbanuman.' },
+  { cat:'朝礼', jp:'指差呼称', r:'ゆびさしこしょう', desc:'「〜よし！」と確認', uz:'Diqqat bilan tekshir.', ne:'Ishara garera check garnu.' },
+  { cat:'安全', jp:'ヘルメット', r:'保護帽(ほごぼう)', desc:'あごひもを締めます', uz:"Jag' bog'ichini mahkamla.", ne:'Ago-himo kasnu hos.' },
+  { cat:'安全', jp:'フルハーネス', r:'ついらくせいしようきぐ', desc:'高いところで必ず使います', uz:"To'liq tana xavfsizligi.", ne:'Full-harness prayog garnu.' },
+  { cat:'安全', jp:'手袋禁止', r:'てぶくろきんし', desc:'回る機械では使いません', uz:'Qo\'lqop taqiqlangan!', ne:'Panja lagaunu hudaina!' },
+  { cat:'腰道具', jp:'ハンマー', r:'かなづち', desc:'釘を打つ、抜く、叩く', uz:"Qolipli bolg'a.", ne:'Katawaku hammer.' },
+  { cat:'腰道具', jp:'スケール', r:'まきじゃく', desc:'寸法を正確に測ります', uz:"O'lchov tasmasi.", ne:'Scale (napnu).' },
+  { cat:'腰道具', jp:'ラチェット', r:'らちぇっと', desc:'ボルトを締める・緩める', uz:"Boltni mahkamla / Bo'shat.", ne:'Ratchet wrench.' },
+  { cat:'腰道具', jp:'墨つぼ', r:'すみつぼ', desc:'真っ直ぐな線を引きます', uz:'Sumitsubo (Markalash).', ne:'Sumitsubo.' },
+  { cat:'腰道具', jp:'釘袋', r:'くぎぶくろ', desc:'釘や小物を入れます', uz:'Mix xaltasi.', ne:'Kanti thaili.' },
+  { cat:'資材', jp:'コンパネ', r:'ごうばん 12mm', desc:'型枠の板', uz:'Fanera.', ne:'Konpane (Plywood).' },
+  { cat:'資材', jp:'桟木（サンギ）', r:'さんぎ', desc:'板を補強する木', uz:'Sangi (Yog\'och brus).', ne:'Sangi.' },
+  { cat:'資材', jp:'バタ角', r:'ばたかく', desc:'外から押さえる太い木', uz:'Batakaku (Katta brus).', ne:'Batakaku.' },
+  { cat:'資材', jp:'セパレーター', r:'せぱれーたー', desc:'型枠の間隔を決めます', uz:'Sepa (Oraliq ushlagich).', ne:'Separator (Sepa).' },
+  { cat:'資材', jp:'Pコン', r:'ぴーこん', desc:'セパの端に付けます', uz:'P-kon (Plastik konus).', ne:'P-Kon.' },
+  { cat:'資材', jp:'フォームタイ', r:'ふぉーむたい', desc:'セパとバタを固定します', uz:'Form-tay.', ne:'Form-tie.' },
+  { cat:'資材', jp:'パイプサポート', r:'ぱいぷさぽーと', desc:'型枠を下に支えます', uz:'Paip-support.', ne:'Pipe support.' },
+  { cat:'組立', jp:'起こして', r:'おこして', desc:'パネルを垂直にします', uz:"Panelni ko'tar.", ne:'Panel uthaunu hos.' },
+  { cat:'組立', jp:'ツラ合わせて', r:'つらあわせて', desc:'表面を平らに揃えます', uz:'Yuzasini tekisla.', ne:'Tura milayera rakhnu.' },
+  { cat:'組立', jp:'下げ振り', r:'さげふり', desc:'垂直か確認します', uz:'Tikligini tekshir.', ne:'Sidhha hernu (Vertical).' },
+  { cat:'打設前', jp:'10分前準備', r:'じゅっぷんまえじゅんび', desc:'バイブ点検・電源・散水', uz:'10 daqiqa oldin tayyorlan!', ne:'10 min agadi tayari!' },
+  { cat:'打設', jp:'バイブかけて', r:'ばいぶ', desc:'コンクリートを振ります', uz:'Vibratsiyani ishlat.', ne:'Vibe lagaunu hos.' },
+  { cat:'打設', jp:'ゆっくり抜いて', r:'ゆっくりぬいて', desc:'気泡を抜きます', uz:"Sekin sug'urib ol.", ne:'Bistari nikalnu hos.' },
+  { cat:'打設', jp:'当てるな！', r:'あてるな', desc:'鉄筋や型枠に触れません', uz:'Tegizma!', ne:'Nachunu hos!' },
+  { cat:'打設', jp:'天端（てんば）', r:'てんば', desc:'生コンを入れる高さ', uz:'Beton balandligi.', ne:'Concrete tenba.' },
+  { cat:'片付', jp:'バール', r:'ばーる', desc:'型枠を剥がします', uz:"Sug'urib ol (Barl).", ne:'Nikalnu hos (Bar).' },
+  { cat:'片付', jp:'ケレン', r:'けれん', desc:'パネルの掃除をします', uz:'Panelni tozala.', ne:'Keren garnu (Safa).' },
+  { cat:'片付', jp:'釘を拾え', r:'くぎをひろえ', desc:'落ちている釘を回収', uz:'Mixlarni terib ol.', ne:'Kanti tipnu hos.' },
+];
+
+const manualData = [
+  { n:1, title:'① 服装・保護具', content:`
+    <ul>
+      <li>ヘルメット（あごひもを締める）をかぶります</li>
+      <li>保護メガネ：墨つぼ・釘打ち機・カッター・グラインダー使用時</li>
+      <li>長袖シャツ、腕まくりをしません、袖口ボタンを留めます</li>
+      <li>ズボンの裾を安全靴の中に入れます</li>
+      <li>安全靴をはきます</li>
+    </ul>
+    <div class="tip-box">🇺🇿 Xavfsizlik jihozlarini kiyish majburiy!<br>🇳🇵 सुरक्षा उपकरण लगाउनु अनिवार्य छ।</div>
+  `},
+  { n:2, title:'② フルハーネス（安全帯）', content:`
+    <p>高さ <strong>2m以上</strong> の場所で、作業床がない場合は必ず着用します。</p>
+    <div class="tip-box">作業前の点検チェック：<br>
+    ● ベルト・ランヤードに傷・切れがないか<br>
+    ● フック・金具が壊れていないか<br>
+    🇺🇿 Ish oldidan jihozni tekshiring.<br>
+    🇳🇵 काम गर्नुअघि उपकरण जाँच गर्नुहोस्।</div>
+  `},
+  { n:3, title:'③ 転倒(てんとう)防止', content:`
+    <ul>
+      <li>床に水・油をこぼしたら、すぐに拭いてください</li>
+      <li>通路に物を置かないでください</li>
+      <li>暗いところは明るくしてください</li>
+      <li>足もとをよく見て歩いてください</li>
+    </ul>
+  `},
+  { n:4, title:'④ 転落・墜落・落下防止', content:`
+    <ul>
+      <li>2m以上の高さで作業するときは作業床を設置します</li>
+      <li>1.5m以上の高さは、はしごや階段を使います</li>
+      <li>作業床の端に囲い・手摺・覆いを付けます</li>
+      <li>付けられないときは水平ネット＋安全帯を使います</li>
+      <li>物を落とさないように気をつけてください</li>
+      <li>上下作業にならないように注意</li>
+    </ul>
+    <div class="tip-box">🇺🇿 2m dan baland joyda to'liq harnesni ishlating.<br>🇳🇵 2 मिटर माथि काम गर्दा full harness लगाउनुहोस्।</div>
+  `},
+  { n:5, title:'⑤ 脚立・可搬式作業台の使い方', content:`
+    <ul>
+      <li>荷物を持って上がったり下りたりしてはいけません</li>
+      <li>脚立の上で体を伸ばしすぎません</li>
+      <li>必ず2人以上で作業します（1人で高い作業をしない）</li>
+    </ul>
+  `},
+  { n:6, title:'⑥ 安全標識', content:`
+    <ul>
+      <li>🔥 <strong>火気厳禁</strong>：絶対に火を使ってはいけません</li>
+      <li>🚫 <strong>使用禁止</strong>：使ってはいけません</li>
+      <li>⬆️ <strong>頭上注意</strong>：頭の上から物が落ちるかもしれません</li>
+      <li>👣 <strong>足もと注意</strong>：足もとをよく見てください</li>
+      <li>🏔️ <strong>墜落注意</strong>：高いところから落ちるかもしれません</li>
+      <li>💧 <strong>酸欠注意</strong>：酸素が少なくなると危ないです</li>
+      <li>⚡ <strong>感電注意</strong>：体に電気が流れます</li>
+    </ul>
+  `},
+  { n:7, title:'⑦ 熱中症の予防', content:`
+    <ul>
+      <li>水分・塩分をこまめにとる</li>
+      <li>空調服など風通しの良い服を着る</li>
+      <li>冷たいタオルで体を冷やす</li>
+      <li>1人で作業をしない</li>
+      <li>体調が悪いときはすぐに職長に伝える</li>
+    </ul>
+    <div class="tip-box">🇺🇿 Issiqlik urishi belgilari: bosh aylanishi, ko'ngil aynish, ter bosish.<br>🇳🇵 गर्मी लागेको लक्षण: टाउको घुम्ने, वाकवाकी, पसिना।</div>
+  `},
+  { n:8, title:'⑧ 朝礼・コミュニケーション', content:`
+    <p>不安なことは必ず<strong>職長</strong>に伝えてください。</p>
+    <ul>
+      <li>毎朝の朝礼に参加して、その日の作業を確認します</li>
+      <li>新しい現場に入るときは新規入場者教育を受けます</li>
+      <li>作業内容を手帳に書いて確認しましょう</li>
+    </ul>
+    <div class="tip-box">🇺🇿 Ishga kirganingizda brigadirga salomlashing.<br>🇳🇵 काम सुरु गर्नु अघि shokuncho-लाई अभिवादन गर्नुहोस्।</div>
+  `},
+];
+
+const checkData = [
+  { label:'ヘルメット装着', sub:'あごひもを締めましたか？' },
+  { label:'安全靴を履く', sub:'ズボンの裾を入れましたか？' },
+  { label:'長袖シャツ着用', sub:'袖口のボタンを留めましたか？' },
+  { label:'安全帯の点検', sub:'ベルト・フックに傷がありませんか？' },
+  { label:'KY活動', sub:'危ない場所を確認しましたか？' },
+  { label:'朝礼に参加', sub:'今日の作業内容を確認しましたか？' },
+  { label:'水分を持った', sub:'熱中症対策はできていますか？' },
+  { label:'体調確認', sub:'体調が悪いときは職長に伝えます' },
+  { label:'通路の確認', sub:'みんなが通る道をきれいにしましたか？' },
+  { label:'落下物の確認', sub:'高いところに落ちそうな物はありませんか？' },
+];
+
+// ===========================
+// STATE
+// ===========================
+let currentLang = 'ja';
+let currentCat = 'ALL';
+let checkStates = JSON.parse(localStorage.getItem('checkStates2') || '[]');
+if (checkStates.length !== checkData.length) checkStates = checkData.map(() => false);
+
+// ===========================
+// SPEECH
+// ===========================
+function speak(text, lang) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'ja-JP';
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+function speakWord(jp, uz, ne, btn) {
+  const langMap = { ja: [jp, 'ja-JP'], uz: [uz, 'uz-UZ'], ne: [ne, 'ne-NP'] };
+  const [text, lang] = langMap[currentLang] || langMap.ja;
+  btn.classList.add('speaking');
+  speak(text, lang);
+  setTimeout(() => btn.classList.remove('speaking'), 1200);
+}
+
+// ===========================
+// LANGUAGE UI
+// ===========================
+function setLang(lang, btn) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const L = LANGS[lang];
+  document.getElementById('h-title').textContent = L.header;
+  document.getElementById('h-sub').textContent = L.sub;
+  document.getElementById('nav-sos').textContent = L.navSos;
+  document.getElementById('nav-words').textContent = L.navWords;
+  document.getElementById('nav-manual').textContent = L.navManual;
+  document.getElementById('nav-check').textContent = L.navCheck;
+  document.getElementById('sos-label').textContent = L.sosLabel;
+  document.getElementById('tel-label').textContent = L.telLabel;
+  document.getElementById('chk-header').textContent = L.chkHeader;
+  document.getElementById('all-done-msg').textContent = L.allDone;
+  document.getElementById('search-input').placeholder = L.searchPlaceholder + ' / Search...';
+  renderSos();
+}
+
+// ===========================
+// SOS
+// ===========================
+function renderSos() {
+  const grid = document.getElementById('sos-grid');
+  grid.innerHTML = sosData.map(s => {
+    const text = currentLang === 'uz' ? s.uz : currentLang === 'ne' ? s.ne : s.jp;
+    const langCode = LANGS[currentLang].voiceLang;
+    return `
+      <div class="sos-btn" onclick="speakSos('${s.jp}','${s.uz}','${s.ne}', this)">
+        <div class="jp">${s.jp}</div>
+        <div class="trans">${currentLang === 'ja' ? s.uz.split('!')[0] : (currentLang === 'uz' ? s.uz : s.ne)}</div>
+        <div class="speaker">🔊</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function speakSos(jp, uz, ne, el) {
+  const map = { ja: [jp,'ja-JP'], uz: [uz,'uz-UZ'], ne: [ne,'ne-NP'] };
+  const [text, lang] = map[currentLang];
+  el.style.transform = 'scale(0.94)';
+  setTimeout(() => el.style.transform = '', 150);
+  speak(text, lang);
+}
+
+// ===========================
+// WORDS
+// ===========================
+function initWordCats() {
+  const cats = ['ALL', ...new Set(wordData.map(w => w.cat))];
+  document.getElementById('cat-scroll').innerHTML = cats.map(c => `
+    <button class="cat-pill ${c==='ALL'?'active':''}" onclick="setCat('${c}',this)">${c==='ALL'?'全部':c}</button>
+  `).join('');
+}
+
+function setCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWords();
+}
+
+function renderWords() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = wordData.filter(w => {
+    const inCat = currentCat === 'ALL' || w.cat === currentCat;
+    const inQ = !q || w.jp.includes(q) || w.r.includes(q) || w.uz.toLowerCase().includes(q) || w.ne.toLowerCase().includes(q) || w.desc.includes(q);
+    return inCat && inQ;
+  });
+  const el = document.getElementById('word-list');
+  if (!filtered.length) { el.innerHTML = '<div class="empty">見つかりません / Not found</div>'; return; }
+  el.innerHTML = filtered.map((w,i) => `
+    <div class="word-card">
+      <div class="word-card-top">
+        <div style="flex:1">
+          <div class="jp-big">${w.jp}</div>
+          <div class="reading">${w.r}</div>
+        </div>
+        <button class="speak-btn" onclick="speakWord('${w.jp}','${w.uz.replace(/'/g,"\\'")}','${w.ne.replace(/'/g,"\\'")}', this)">🔊</button>
+      </div>
+      <div class="desc-text">${w.desc}</div>
+      <div class="word-card-langs">
+        <div class="lang-cell">
+          <span class="flag">🇺🇿</span>
+          <span class="lang-text">${w.uz}</span>
+          <button class="speak-sm" onclick="speak('${w.uz.replace(/'/g,"\\'")}','uz-UZ')">🔊</button>
+        </div>
+        <div class="lang-cell">
+          <span class="flag">🇳🇵</span>
+          <span class="lang-text">${w.ne}</span>
+          <button class="speak-sm" onclick="speak('${w.ne.replace(/'/g,"\\'")}','ne-NP')">🔊</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===========================
+// MANUAL
+// ===========================
+function initManual() {
+  document.getElementById('manual-list').innerHTML = manualData.map(m => `
+    <div class="manual-item">
+      <div class="manual-head" onclick="toggleManual(this)">
+        <div class="num-circle">${m.n}</div>
+        <div class="mtitle">${m.title}</div>
+        <div class="chevron">⌄</div>
+      </div>
+      <div class="manual-body">
+        <div class="manual-body-inner">${m.content}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleManual(head) {
+  const body = head.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  head.classList.toggle('open', !isOpen);
+}
+
+// ===========================
+// CHECKLIST
+// ===========================
+function renderCheck() {
+  const done = checkStates.filter(Boolean).length;
+  const total = checkData.length;
+  document.getElementById('chk-done').textContent = done;
+  document.getElementById('chk-total').textContent = total;
+  document.getElementById('prog-fill').style.width = `${(done/total)*100}%`;
+  document.getElementById('all-done-msg').style.display = done === total ? 'block' : 'none';
+  document.getElementById('chk-list').innerHTML = checkData.map((c,i) => `
+    <div class="chk-item ${checkStates[i]?'done':''}" onclick="toggleCheck(${i})">
+      <div class="chk-circle">${checkStates[i]?'✓':''}</div>
+      <div class="chk-texts">
+        <div class="clabel">${c.label}</div>
+        <div class="csub">${c.sub}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCheck(i) {
+  checkStates[i] = !checkStates[i];
+  localStorage.setItem('checkStates2', JSON.stringify(checkStates));
+  renderCheck();
+}
+
+function resetCheck() {
+  checkStates = checkData.map(() => false);
+  localStorage.setItem('checkStates2', JSON.stringify(checkStates));
+  renderCheck();
+}
+
+// ===========================
+// NAVIGATION
+// ===========================
+function showSection(name, navEl) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(n => n.classList.remove('active'));
+  navEl.classList.add('active');
+}
+
+// ===========================
+// INIT
+// ===========================
+renderSos();
+initWordCats();
+renderWords();
+initManual();
+renderCheck();
+</script>
+</body>
+</html>
